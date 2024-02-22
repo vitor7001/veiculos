@@ -1,5 +1,6 @@
 package com.gerenciador.veiculos.service.implementacao;
 
+import com.gerenciador.veiculos.exception.BusinessException;
 import com.gerenciador.veiculos.model.Veiculo;
 import com.gerenciador.veiculos.model.repository.VeiculoRepository;
 import com.gerenciador.veiculos.service.VeiculoService;
@@ -20,7 +21,20 @@ public class VeiculoServiceImplementacao implements VeiculoService {
 
     @Override
     public Veiculo salvar(Veiculo veiculo) {
-        return null;
+
+        if (veiculoRepository.existsById(veiculo.getId())) {
+            throw new BusinessException("Este id já existe na base.");
+        }
+
+        if(veiculoRepository.existsByChassi(veiculo.getChassi())){
+            throw new BusinessException("Este chassi já existe na base.");
+        }
+
+        if(veiculoRepository.existsByPlaca(veiculo.getPlaca())){
+            throw new BusinessException("Esta placa já existe na base.");
+        }
+
+        return this.veiculoRepository.save(veiculo);
     }
 
     @Override
