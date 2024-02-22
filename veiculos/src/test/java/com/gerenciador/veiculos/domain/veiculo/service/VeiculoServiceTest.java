@@ -2,10 +2,12 @@ package com.gerenciador.veiculos.domain.veiculo.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.gerenciador.veiculos.exception.BusinessException;
 import com.gerenciador.veiculos.model.Veiculo;
 import com.gerenciador.veiculos.model.repository.VeiculoRepository;
 import com.gerenciador.veiculos.service.VeiculoService;
 import com.gerenciador.veiculos.service.implementacao.VeiculoServiceImplementacao;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,6 +63,37 @@ public class VeiculoServiceTest {
         assertThat(veiculoSalvo.getStatus()).isNotNull();
         assertThat(veiculoSalvo.getPlaca()).isNotNull();
 
+    }
+
+
+    @Test
+    @DisplayName("Deve lançar um erro ao tentar salvar um veiculo com um chassi já cadastrado")
+    public void erroAoSalvarVeiculoComChassiDuplicado(){
+
+        Veiculo veiculo = criarVeiculo();
+
+        Mockito.when(veiculoRepository.existsByChassi(Mockito.anyString())).thenReturn(true);
+
+        Throwable excecao = Assertions.catchThrowable(() -> veiculoService.salvar(veiculo));
+
+        assertThat(excecao).isInstanceOf(BusinessException.class).hasMessage("Este chassi já existe na base.");
+
+        Mockito.verify(veiculoRepository, Mockito.never()).save(veiculo);
+    }
+
+    @Test
+    @DisplayName("Deve lançar um erro ao tentar salvar um veiculo com uma placa já cadastrada")
+    public void erroAoSalvarVeiculoComPlacaDuplicada(){
+
+        Veiculo veiculo = criarVeiculo();
+
+        Mockito.when(veiculoRepository.existsByPlaca(Mockito.anyString())).thenReturn(true);
+
+        Throwable excecao = Assertions.catchThrowable(() -> veiculoService.salvar(veiculo));
+
+        assertThat(excecao).isInstanceOf(BusinessException.class).hasMessage("Esta placa já existe na base.");
+
+        Mockito.verify(veiculoRepository, Mockito.never()).save(veiculo);
     }
 
     public static Veiculo criarVeiculo() {
