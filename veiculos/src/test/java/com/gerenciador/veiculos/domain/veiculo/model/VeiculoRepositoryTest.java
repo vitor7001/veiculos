@@ -13,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DataJpaTest
@@ -27,14 +29,30 @@ public class VeiculoRepositoryTest{
     @Test
     @DisplayName("Deve retornar verdadeiro quando existir um veiculo com o id informado.")
     public void deveSalvarUmVeiculo(){
-
+        //arrange
         Veiculo veiculo = criarVeiculo();
 
+        //act
         Veiculo veiculoSalvo = veiculoRepository.save(veiculo);
 
+        //assert
         assertThat(veiculoSalvo.getId()).isNotNull();
     }
 
+
+    @Test
+    @DisplayName("Deve obter um veiculo por id")
+    public void findByIdTest() {
+        //arrange
+        Veiculo veiculo = criarVeiculo();
+        tem.persist(veiculo);
+
+        //act
+        Optional<Veiculo> foundBook = veiculoRepository.findById(veiculo.getId());
+
+        //assert
+        assertThat(foundBook.isPresent()).isTrue();
+    }
 
     public static Veiculo criarVeiculo(){
         return Veiculo.builder()
