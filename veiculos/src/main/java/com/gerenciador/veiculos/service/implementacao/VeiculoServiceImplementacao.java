@@ -4,6 +4,7 @@ import com.gerenciador.veiculos.model.Veiculo;
 import com.gerenciador.veiculos.model.repository.VeiculoRepository;
 import com.gerenciador.veiculos.service.VeiculoService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -38,8 +39,10 @@ public class VeiculoServiceImplementacao implements VeiculoService {
     }
 
     @Override
-    public Page<Veiculo> listarVeiculos(String name, String manufacturer, int ano) {
+    public Page<Veiculo> listarVeiculos(Veiculo filter, Pageable pageRequest) {
         return null;
     }
+
+
 }
 

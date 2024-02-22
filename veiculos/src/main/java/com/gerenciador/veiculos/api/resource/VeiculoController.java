@@ -1,15 +1,21 @@
 package com.gerenciador.veiculos.api.resource;
 
 import com.gerenciador.veiculos.api.dto.VeiculoDTO;
+import com.gerenciador.veiculos.api.dto.VeiculoFiltroDTO;
 import com.gerenciador.veiculos.model.Veiculo;
 import com.gerenciador.veiculos.service.VeiculoService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/veiculos")
@@ -69,6 +75,19 @@ public class VeiculoController {
         veiculo = veiculoService.atualizar(veiculo);
 
         return modelMapper.map(veiculo, VeiculoDTO.class);
+    }
+
+    @GetMapping
+    public Page<VeiculoDTO> buscarPaginado(VeiculoFiltroDTO dto, Pageable pageRequest){
+
+        Veiculo filtro = modelMapper.map(dto, Veiculo.class);
+
+        Page<Veiculo> resultado = veiculoService.listarVeiculos(filtro, pageRequest);
+
+        List<VeiculoDTO> listaDeVeiculosFiltrados = resultado.getContent().stream().map(entidade -> modelMapper.map(entidade, VeiculoDTO.class))
+                .collect(Collectors.toList());
+
+        return new PageImpl<VeiculoDTO>(listaDeVeiculosFiltrados, pageRequest, resultado.getTotalElements());
     }
 
 }
