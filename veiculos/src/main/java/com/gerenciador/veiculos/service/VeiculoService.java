@@ -3,7 +3,6 @@ package com.gerenciador.veiculos.service;
 import com.gerenciador.veiculos.model.Veiculo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
@@ -14,7 +13,7 @@ public interface VeiculoService {
 
     Optional<Veiculo> buscarPorId(Long id);
 
-    void excluir(Veiculo veiculo);
+    void delecaoLogicaVeiculo(Veiculo veiculo);
 
     Veiculo atualizar(Veiculo veiculo);
 

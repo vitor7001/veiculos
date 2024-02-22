@@ -45,8 +45,9 @@ public class VeiculoServiceImplementacao implements VeiculoService {
     }
 
     @Override
-    public void excluir(Veiculo veiculo) {
-
+    public void delecaoLogicaVeiculo(Veiculo veiculo) {
+        //não está sendo apagado o registro do veiculo do banco de dados, apenas alterado o status dele para "DEACTIVATED"
+        veiculoRepository.save(veiculo);
     }
 
     @Override

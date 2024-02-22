@@ -2,6 +2,7 @@ package com.gerenciador.veiculos.api.resource;
 
 import com.gerenciador.veiculos.api.dto.VeiculoDTO;
 import com.gerenciador.veiculos.api.dto.VeiculoFiltroDTO;
+import com.gerenciador.veiculos.api.dto.VeiculoStatusDTO;
 import com.gerenciador.veiculos.exception.BusinessException;
 import com.gerenciador.veiculos.model.Veiculo;
 import com.gerenciador.veiculos.service.VeiculoService;
@@ -24,7 +25,6 @@ public class VeiculoController {
     private VeiculoService veiculoService;
     private final ModelMapper modelMapper;
 
-
     public VeiculoController(VeiculoService veiculoService, ModelMapper modelMapper) {
         this.veiculoService = veiculoService;
         this.modelMapper = modelMapper;
@@ -34,7 +34,7 @@ public class VeiculoController {
     @ResponseStatus(HttpStatus.CREATED)
     public VeiculoDTO criar(@RequestBody @Valid VeiculoDTO dto){
 
-        if(statusForaDoEsperado(dto.getStatus())){
+        if(!statusDentroDoEsperado(dto.getStatus())){
             throw new BusinessException("O Status " + dto.getStatus() + " não corresponde a nenhum dos status validos.");
         }
 
@@ -42,12 +42,11 @@ public class VeiculoController {
 
         veiculo = veiculoService.salvar(veiculo);
 
-        return new VeiculoDTO();
+        return modelMapper.map(veiculo, VeiculoDTO.class);
     }
 
     @GetMapping("{id}")
     public VeiculoDTO buscar(@PathVariable Long id){
-
         return veiculoService.buscarPorId(id).map(veiculo -> modelMapper.map(veiculo, VeiculoDTO.class))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -55,32 +54,24 @@ public class VeiculoController {
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletar(@PathVariable Long id){
-
+    public void deletacaoLogica(@PathVariable Long id){
         Veiculo veiculo = veiculoService.buscarPorId(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         veiculo.setStatus("DEACTIVATED");
-        veiculoService.salvar(veiculo);
+        veiculoService.delecaoLogicaVeiculo(veiculo);
     }
 
-    @PutMapping("{id}")
-    public VeiculoDTO atualizar(@PathVariable Long id, @RequestBody @Valid VeiculoDTO dto){
+    @PatchMapping("{id}")
+    public VeiculoDTO atualizar(@PathVariable Long id, @RequestBody @Valid VeiculoStatusDTO dto){
 
         Veiculo veiculo = veiculoService.buscarPorId(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        veiculo.setChassi(dto.getChassi());
-        veiculo.setName(dto.getName());
-        veiculo.setManufacturer(dto.getManufacturer());
-        veiculo.setYear(dto.getYear());
-        veiculo.setColor(dto.getColor());
-
-        if(statusForaDoEsperado(dto.getStatus())){
+        if(!statusDentroDoEsperado(dto.getStatus())){
             throw new BusinessException("O Status " + dto.getStatus() + " não corresponde a nenhum dos status validos.");
         }
 
         veiculo.setStatus(dto.getStatus());
-        veiculo.setPlaca(dto.getPlaca());
 
         veiculo = veiculoService.atualizar(veiculo);
 
@@ -101,7 +92,7 @@ public class VeiculoController {
     }
 
 
-    private boolean statusForaDoEsperado(String status){
+    private boolean statusDentroDoEsperado(String status){
         return "ACTIVATED".equals(status)
                 || "DEACTIVATED".equals(status)
                 || "RESERVED".equals(status)
