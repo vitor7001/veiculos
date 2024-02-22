@@ -22,10 +22,6 @@ public class VeiculoServiceImplementacao implements VeiculoService {
     @Override
     public Veiculo salvar(Veiculo veiculo) {
 
-        if (veiculoRepository.existsById(veiculo.getId())) {
-            throw new BusinessException("Este id já existe na base.");
-        }
-
         if(veiculoRepository.existsByChassi(veiculo.getChassi())){
             throw new BusinessException("Este chassi já existe na base.");
         }
