@@ -122,6 +122,9 @@ public class VeiculoServiceTest {
         assertThat(veiculoEncontrado.get().getStatus()).isEqualTo(veiculo.getStatus());
     }
 
+    @Test
+    @DisplayName("Deve retornar um erro ao deletar veiculo inexistente")
+
     public static Veiculo criarVeiculo() {
         return Veiculo.builder()
                 .chassi("QualquerChassi")

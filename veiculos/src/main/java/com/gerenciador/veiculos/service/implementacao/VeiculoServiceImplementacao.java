@@ -4,6 +4,8 @@ import com.gerenciador.veiculos.exception.BusinessException;
 import com.gerenciador.veiculos.model.Veiculo;
 import com.gerenciador.veiculos.model.repository.VeiculoRepository;
 import com.gerenciador.veiculos.service.VeiculoService;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -58,7 +60,11 @@ public class VeiculoServiceImplementacao implements VeiculoService {
 
     @Override
     public Page<Veiculo> listarVeiculos(Veiculo filter, Pageable pageRequest) {
-        return null;
+
+        Example<Veiculo> example = Example.of(filter, ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+
+        return veiculoRepository.findAll(example, pageRequest);
     }
 
 

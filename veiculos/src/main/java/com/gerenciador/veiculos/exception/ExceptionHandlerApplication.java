@@ -28,6 +28,12 @@ public class ExceptionHandlerApplication {
 
     }
 
+    @ExceptionHandler(ListaVaziaException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors handleListaVaziaException(ListaVaziaException ex){
+        return  new ApiErrors(ex);
+    }
+
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ApiErrors> handleResponseStatusException(ResponseStatusException ex) {
         return new ResponseEntity<ApiErrors>(new ApiErrors(ex), ex.getStatus());

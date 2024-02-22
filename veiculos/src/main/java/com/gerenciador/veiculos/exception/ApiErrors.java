@@ -23,6 +23,10 @@ public class ApiErrors {
 
     }
 
+    public ApiErrors(ListaVaziaException ex){
+        this.errors = Arrays.asList(ex.getMessage());
+    }
+
     public ApiErrors(ResponseStatusException ex) {
         this.errors = Arrays.asList(ex.getReason());
 

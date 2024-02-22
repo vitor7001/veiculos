@@ -4,6 +4,7 @@ import com.gerenciador.veiculos.api.dto.VeiculoDTO;
 import com.gerenciador.veiculos.api.dto.VeiculoFiltroDTO;
 import com.gerenciador.veiculos.api.dto.VeiculoStatusDTO;
 import com.gerenciador.veiculos.exception.BusinessException;
+import com.gerenciador.veiculos.exception.ListaVaziaException;
 import com.gerenciador.veiculos.model.Veiculo;
 import com.gerenciador.veiculos.service.VeiculoService;
 import org.modelmapper.ModelMapper;
@@ -48,7 +49,7 @@ public class VeiculoController {
     @GetMapping("{id}")
     public VeiculoDTO buscar(@PathVariable Long id){
         return veiculoService.buscarPorId(id).map(veiculo -> modelMapper.map(veiculo, VeiculoDTO.class))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ListaVaziaException("Não existe um veículo na base para ser pesquisado."));
 
     }
 
@@ -87,6 +88,10 @@ public class VeiculoController {
 
         List<VeiculoDTO> listaDeVeiculosFiltrados = resultado.getContent().stream().map(entidade -> modelMapper.map(entidade, VeiculoDTO.class))
                 .collect(Collectors.toList());
+
+        if(listaDeVeiculosFiltrados.isEmpty()){
+            throw new ListaVaziaException("Não existem veículos na base para serem pesquisados");
+        }
 
         return new PageImpl<VeiculoDTO>(listaDeVeiculosFiltrados, pageRequest, resultado.getTotalElements());
     }
