@@ -56,7 +56,8 @@ public class VeiculoController {
         Veiculo veiculo = veiculoService.buscarPorId(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        veiculoService.excluir(veiculo);
+        veiculo.setStatus("DEACTIVATED");
+        veiculoService.salvar(veiculo);
     }
 
     @PutMapping("{id}")
