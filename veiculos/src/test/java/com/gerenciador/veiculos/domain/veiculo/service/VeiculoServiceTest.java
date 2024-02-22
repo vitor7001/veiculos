@@ -18,6 +18,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class VeiculoServiceTest {
@@ -94,6 +96,30 @@ public class VeiculoServiceTest {
         assertThat(excecao).isInstanceOf(BusinessException.class).hasMessage("Esta placa já existe na base.");
 
         Mockito.verify(veiculoRepository, Mockito.never()).save(veiculo);
+    }
+
+    @Test
+    @DisplayName("Deve obter um veiculo por id")
+    public void buscarVeiculoPorId(){
+
+        Long id = 1L;
+
+        Veiculo veiculo = criarVeiculo();
+        veiculo.setId(id);
+
+        Mockito.when(veiculoRepository.findById(id)).thenReturn(Optional.of(veiculo));
+
+        Optional<Veiculo> veiculoEncontrado = veiculoService.buscarPorId(id);
+
+        assertThat(veiculoEncontrado.isPresent()).isTrue();
+        assertThat(veiculoEncontrado.get().getId()).isEqualTo(id);
+        assertThat(veiculoEncontrado.get().getName()).isEqualTo(veiculo.getName());
+        assertThat(veiculoEncontrado.get().getChassi()).isEqualTo(veiculo.getChassi());
+        assertThat(veiculoEncontrado.get().getPlaca()).isEqualTo(veiculo.getPlaca());
+        assertThat(veiculoEncontrado.get().getYear()).isEqualTo(veiculo.getYear());
+        assertThat(veiculoEncontrado.get().getManufacturer()).isEqualTo(veiculo.getManufacturer());
+        assertThat(veiculoEncontrado.get().getColor()).isEqualTo(veiculo.getColor());
+        assertThat(veiculoEncontrado.get().getStatus()).isEqualTo(veiculo.getStatus());
     }
 
     public static Veiculo criarVeiculo() {
