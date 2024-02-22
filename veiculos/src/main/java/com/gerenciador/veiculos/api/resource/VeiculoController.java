@@ -2,9 +2,9 @@ package com.gerenciador.veiculos.api.resource;
 
 import com.gerenciador.veiculos.api.dto.VeiculoDTO;
 import com.gerenciador.veiculos.api.dto.VeiculoFiltroDTO;
+import com.gerenciador.veiculos.exception.BusinessException;
 import com.gerenciador.veiculos.model.Veiculo;
 import com.gerenciador.veiculos.service.VeiculoService;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -33,6 +33,10 @@ public class VeiculoController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public VeiculoDTO criar(@RequestBody @Valid Veiculo dto){
+
+        if(statusForaDoEsperado(dto.getStatus())){
+            throw new BusinessException("O Status " + dto.getStatus() + " não corresponde a nenhum dos status validos.");
+        }
 
         Veiculo veiculo = modelMapper.map(dto, Veiculo.class);
 
@@ -70,6 +74,11 @@ public class VeiculoController {
         veiculo.setManufacturer(dto.getManufacturer());
         veiculo.setYear(dto.getYear());
         veiculo.setColor(dto.getColor());
+
+        if(statusForaDoEsperado(dto.getStatus())){
+            throw new BusinessException("O Status " + dto.getStatus() + " não corresponde a nenhum dos status validos.");
+        }
+
         veiculo.setStatus(dto.getStatus());
         veiculo.setPlaca(dto.getPlaca());
 
@@ -89,6 +98,14 @@ public class VeiculoController {
                 .collect(Collectors.toList());
 
         return new PageImpl<VeiculoDTO>(listaDeVeiculosFiltrados, pageRequest, resultado.getTotalElements());
+    }
+
+
+    private boolean statusForaDoEsperado(String status){
+        return "ACTIVATED".equals(status)
+                || "DEACTIVATED".equals(status)
+                || "RESERVED".equals(status)
+                || "RENTED".equals(status);
     }
 
 }
