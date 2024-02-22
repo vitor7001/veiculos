@@ -39,7 +39,9 @@ public class VeiculoServiceImplementacao implements VeiculoService {
 
     @Override
     public Optional<Veiculo> buscarPorId(Long id) {
-        return Optional.empty();
+
+        return this.veiculoRepository.findById(id);
+
     }
 
     @Override
@@ -49,7 +51,12 @@ public class VeiculoServiceImplementacao implements VeiculoService {
 
     @Override
     public Veiculo atualizar(Veiculo veiculo) {
-        return null;
+
+        if (veiculo == null){
+            throw  new BusinessException("O id não pode ser nulo.");
+        }
+
+        return  this.veiculoRepository.save(veiculo);
     }
 
     @Override
