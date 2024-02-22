@@ -27,10 +27,40 @@ public class VeiculoRepositoryTest{
     VeiculoRepository veiculoRepository;
 
     @Test
+    @DisplayName("Deve retornar verdadeiro quando existir um veiculo com o chassi informado.")
+    public void deveBuscarVeiculoPeloChassiTest() {
+        String chassi = "loreipsumdolor";
+
+        Veiculo veiculo = criarVeiculo(chassi, "QualquerPlaca");
+
+        tem.persist(veiculo);
+
+        boolean exists = veiculoRepository.existsByChassi(chassi);
+
+        assertThat(exists).isTrue();
+        assertThat(chassi).isEqualTo(veiculo.getChassi());
+    }
+
+    @Test
+    @DisplayName("Deve retornar verdadeiro quando existir um veiculo com a placa informado.")
+    public void deveBuscarVeiculoPelaPlacaTest() {
+        String placa = "OPA0148";
+
+        Veiculo veiculo = criarVeiculo("QualquerChassi", placa);
+
+        tem.persist(veiculo);
+
+        boolean exists = veiculoRepository.existsByPlaca(placa);
+
+        assertThat(exists).isTrue();
+        assertThat(placa).isEqualTo(veiculo.getPlaca());
+    }
+
+    @Test
     @DisplayName("Deve retornar verdadeiro quando existir um veiculo com o id informado.")
-    public void deveSalvarUmVeiculo(){
+    public void deveSalvarUmVeiculoTest(){
         //arrange
-        Veiculo veiculo = criarVeiculo();
+        Veiculo veiculo = criarVeiculo("QualquerChassi", "QualquerPlaca");
 
         //act
         Veiculo veiculoSalvo = veiculoRepository.save(veiculo);
@@ -42,9 +72,9 @@ public class VeiculoRepositoryTest{
 
     @Test
     @DisplayName("Deve obter um veiculo por id")
-    public void findByIdTest() {
+    public void buscarPorIdTest() {
         //arrange
-        Veiculo veiculo = criarVeiculo();
+        Veiculo veiculo = criarVeiculo("QualquerChassi", "QualquerPlaca");
         tem.persist(veiculo);
 
         //act
@@ -54,15 +84,15 @@ public class VeiculoRepositoryTest{
         assertThat(foundBook.isPresent()).isTrue();
     }
 
-    public static Veiculo criarVeiculo(){
+    public static Veiculo criarVeiculo(String chassi, String placa){
         return Veiculo.builder()
-                .chassi("QualquerChassi")
+                .chassi(chassi)
                 .name("QualquerNome")
                 .manufacturer("QualquerManufacturer")
                 .year(2024)
                 .color("White")
                 .status("ACTIVATED")
-                .placa("QualquerPlaca").build();
+                .placa(placa).build();
     }
 
 }
