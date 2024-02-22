@@ -32,7 +32,7 @@ public class VeiculoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public VeiculoDTO criar(@RequestBody @Valid Veiculo dto){
+    public VeiculoDTO criar(@RequestBody @Valid VeiculoDTO dto){
 
         if(statusForaDoEsperado(dto.getStatus())){
             throw new BusinessException("O Status " + dto.getStatus() + " não corresponde a nenhum dos status validos.");

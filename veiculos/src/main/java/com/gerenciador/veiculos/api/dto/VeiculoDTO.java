@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 
 @Data
@@ -16,24 +19,25 @@ public class VeiculoDTO {
 
     private long id;
 
-    @NotEmpty
+    @NotBlank(message = "O campo chassi não pode ser nulo")
     private String chassi;
 
-    @NotEmpty
+    @NotBlank(message = "O campo name não pode ser nulo")
     private String name;
 
-    @NotEmpty
+    @NotBlank(message = "O campo menufacturer não pode ser nulo")
     private String manufacturer;
 
-    @NotEmpty
+    @NotNull(message = "O campo year não pode ser nulo")
+    @Positive(message = "O valor deve ser maior que zero")
     private int year;
 
-    @NotEmpty
+    @NotBlank(message = "O campo color não pode ser nulo")
     private String color;
 
-    @NotEmpty
+    @NotBlank(message = "O campo status não pode ser nulo")
     private String status;
 
-    @NotEmpty
+    @NotBlank(message = "O campo placa não pode ser nulo")
     private String placa;
 }

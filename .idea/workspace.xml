@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="83ec3578-a77a-4eb5-b3f6-4f876a439135" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/veiculos/src/main/java/com/gerenciador/veiculos/exception/ApiErrors.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/veiculos/src/main/java/com/gerenciador/veiculos/exception/ExceptionHandlerApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/veiculos/src/main/java/com/gerenciador/veiculos/api/dto/VeiculoDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/veiculos/src/main/java/com/gerenciador/veiculos/api/dto/VeiculoDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/veiculos/src/main/java/com/gerenciador/veiculos/api/resource/VeiculoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/veiculos/src/main/java/com/gerenciador/veiculos/api/resource/VeiculoController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -75,7 +78,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1708558446937</updated>
-      <workItem from="1708558447951" duration="7222000" />
+      <workItem from="1708558447951" duration="8024000" />
     </task>
     <servers />
   </component>
