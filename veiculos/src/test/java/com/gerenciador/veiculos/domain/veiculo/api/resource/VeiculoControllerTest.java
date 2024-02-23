@@ -120,6 +120,24 @@ public class VeiculoControllerTest {
     }
 
     @Test
+    @DisplayName("Deve lançar erro ao criar veiculo com Status fora dos padrões")
+    public void erroAoCriarVeiculoComStatusInvalidos() throws Exception {
+        String status = "ERRORSTATUSTEST";
+        String mensagemDeErro = "O Status " + status + " não corresponde a nenhum dos status validos.";
+
+        VeiculoDTO dto = criarVeiculoDTO();
+        dto.setStatus(status);
+        String json = new ObjectMapper().writeValueAsString(dto);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(API_BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(json);
+
+        mvc.perform(request).andExpect(status().isBadRequest()).andExpect(jsonPath("erros", hasSize(1)))
+                .andExpect(jsonPath("erros[0]").value(mensagemDeErro));
+
+    }
+
+    @Test
     @DisplayName("Deve retornar resource not found quando não encontrar o livro para deletar")
     public void deleteInexistentBookTest() throws Exception {
 
@@ -130,6 +148,38 @@ public class VeiculoControllerTest {
         mvc.perform(request).andExpect(status().isNotFound());
 
     }
+
+    @Test
+    @DisplayName("Deve buscar um veiculo.")
+    public void buscarveiculoPorId() throws Exception {
+        Long id = 1l;
+
+        VeiculoDTO dto = criarVeiculoDTO();
+
+        Veiculo veiculo = Veiculo.builder().id(1L).name(criarVeiculoDTO().getName())
+                .chassi(criarVeiculoDTO().getChassi())
+                .status(criarVeiculoDTO().getStatus())
+                .year(criarVeiculoDTO().getYear())
+                .placa(criarVeiculoDTO().getPlaca())
+                .color(criarVeiculoDTO().getColor())
+                .manufacturer(criarVeiculoDTO().getManufacturer()).build();
+
+        BDDMockito.given(veiculoService.buscarPorId(id)).willReturn(Optional.of(veiculo));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API_BASE_URL.concat("/" + id))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request).andExpect(status().isOk()).andExpect(jsonPath("id").value(id))
+                .andExpect(jsonPath("name").value(criarVeiculoDTO().getName()))
+                .andExpect(jsonPath("chassi").value(criarVeiculoDTO().getChassi()))
+                .andExpect(jsonPath("status").value(criarVeiculoDTO().getStatus()))
+                .andExpect(jsonPath("year").value(criarVeiculoDTO().getYear()))
+                .andExpect(jsonPath("placa").value(criarVeiculoDTO().getPlaca()))
+                .andExpect(jsonPath("color").value(criarVeiculoDTO().getColor()))
+                .andExpect(jsonPath("manufacturer").value(criarVeiculoDTO().getManufacturer()));
+
+    }
+
 
     public VeiculoDTO criarVeiculoDTO(){
         return VeiculoDTO.builder().name("Uno").chassi("SIMNAO").status("ACTIVATED").year(2024).placa("QWE123S").color("RED").manufacturer("FIAT").build();
