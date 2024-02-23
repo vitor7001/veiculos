@@ -4,8 +4,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.hasSize;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gerenciador.veiculos.api.dto.VeiculoDTO;
+import com.gerenciador.veiculos.api.dto.VeiculoStatusDTO;
 import com.gerenciador.veiculos.api.resource.VeiculoController;
 import com.gerenciador.veiculos.exception.BusinessException;
 import com.gerenciador.veiculos.model.Veiculo;
@@ -181,8 +183,36 @@ public class VeiculoControllerTest {
     }
 
 
+    @Test
+    @DisplayName("Deve atualizar um veiculo com um status RESERVED")
+    public void atualizarVeiculoStatusValido() throws Exception {
+        Long id = 1l;
+
+        String json = new ObjectMapper().writeValueAsString(criarVeiculoStatusDTO());
+
+        Veiculo veiculo = Veiculo.builder().id(1L).name("Uno").chassi("SIMNAO").status("ACTIVATED").year(2024).placa("QWE123S").color("RED").manufacturer("FIAT").build();
+
+        BDDMockito.given(veiculoService.buscarPorId(id)).willReturn(Optional.of(veiculo));
+
+        Veiculo veiculoAtualizado =Veiculo.builder().id(1L).name("Uno").chassi("SIMNAO").status("RESERVED").year(2024).placa("QWE123S").color("RED").manufacturer("FIAT").build();
+        BDDMockito.given(veiculoService.atualizar(veiculo)).willReturn(veiculoAtualizado);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.patch(API_BASE_URL.concat("/" + 1)).content(json)
+                .accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request).andExpect(status().isOk()).andExpect(jsonPath("id").value(id))
+                .andExpect(jsonPath("name").value(criarVeiculoDTO().getName()))
+                .andExpect(jsonPath("chassi").value(criarVeiculoDTO().getChassi()))
+                .andExpect(jsonPath("manufacturer").value(criarVeiculoDTO().getManufacturer()))
+                .andExpect(jsonPath("status").value("RESERVED"));
+    }
+
     public VeiculoDTO criarVeiculoDTO(){
         return VeiculoDTO.builder().name("Uno").chassi("SIMNAO").status("ACTIVATED").year(2024).placa("QWE123S").color("RED").manufacturer("FIAT").build();
+    }
+
+    public VeiculoStatusDTO criarVeiculoStatusDTO(){
+        return VeiculoStatusDTO.builder().status("ACTIVATED").build();
     }
 }
 
