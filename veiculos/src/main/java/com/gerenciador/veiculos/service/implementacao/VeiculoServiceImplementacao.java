@@ -62,7 +62,8 @@ public class VeiculoServiceImplementacao implements VeiculoService {
     public Page<Veiculo> listarVeiculos(Veiculo filter, Pageable pageRequest) {
 
         Example<Veiculo> example = Example.of(filter, ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues()
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                .withIgnorePaths("id"));
 
         return veiculoRepository.findAll(example, pageRequest);
     }

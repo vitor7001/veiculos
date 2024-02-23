@@ -13,13 +13,10 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 public class VeiculoFiltroDTO {
 
-    @NotEmpty
     private String name;
 
-    @NotEmpty
     private String manufacturer;
 
-    @NotEmpty
     private int year;
 
 }
