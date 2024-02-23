@@ -7,6 +7,7 @@ import com.gerenciador.veiculos.exception.BusinessException;
 import com.gerenciador.veiculos.exception.ListaVaziaException;
 import com.gerenciador.veiculos.model.Veiculo;
 import com.gerenciador.veiculos.service.VeiculoService;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -33,6 +34,7 @@ public class VeiculoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("Criar um veículo")
     public VeiculoDTO criar(@RequestBody @Valid VeiculoDTO dto){
 
         if(!statusDentroDoEsperado(dto.getStatus())){
@@ -47,6 +49,7 @@ public class VeiculoController {
     }
 
     @GetMapping("{id}")
+    @ApiOperation("Buscar um veículo")
     public VeiculoDTO buscar(@PathVariable Long id){
         return veiculoService.buscarPorId(id).map(veiculo -> modelMapper.map(veiculo, VeiculoDTO.class))
                 .orElseThrow(() -> new ListaVaziaException("Não existe um veículo na base para ser pesquisado."));
@@ -55,6 +58,7 @@ public class VeiculoController {
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("Deletar um veículo")
     public void deletacaoLogica(@PathVariable Long id){
         Veiculo veiculo = veiculoService.buscarPorId(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -64,6 +68,7 @@ public class VeiculoController {
     }
 
     @PatchMapping("{id}")
+    @ApiOperation("Atualizar o status de um veículo")
     public VeiculoDTO atualizar(@PathVariable Long id, @RequestBody @Valid VeiculoStatusDTO dto){
 
         Veiculo veiculo = veiculoService.buscarPorId(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -80,6 +85,7 @@ public class VeiculoController {
     }
 
     @GetMapping
+    @ApiOperation("Buscar veiculos de forma paginada")
     public Page<VeiculoDTO> buscarPaginado(VeiculoFiltroDTO dto, Pageable pageRequest){
 
         Veiculo filtro = modelMapper.map(dto, Veiculo.class);
